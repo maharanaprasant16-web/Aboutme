@@ -86,7 +86,7 @@ h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.02em;li
 .cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .cc{display:flex;gap:14px;align-items:center;padding:18px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);transition:.2s;min-width:0}a.cc:hover{background:rgba(255,255,255,.16);transform:translateY(-3px)}
 .cc .ic{width:22px;height:22px;color:#9bd5ff}.cc small{display:block;color:#a9bde6;font-size:.76rem}.cc b{display:block;font-weight:600;overflow-wrap:anywhere}
-.copy{text-align:center;color:#8fa6d6;font-size:.85rem;margin-top:36px}
+.copy{text-align:center;color:#8fa6d6;font-size:.85rem;margin-top:36px}\n.visitor-count{text-align:center;color:#a9bde6;font-size:.82rem;margin-top:8px}.visitor-count strong{color:#fff;font-weight:700;margin-left:4px}
 .fab{position:fixed;right:22px;bottom:22px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:#fff;box-shadow:0 10px 24px -8px var(--primary);opacity:0;pointer-events:none;transition:.25s;z-index:30}.fab.show{opacity:1;pointer-events:auto}
 /* motion + responsive + print */
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.reveal.in{opacity:1;transform:none}
@@ -98,6 +98,7 @@ h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.02em;li
 </head>
 <body>
 <div id="app"><noscript>Please enable JavaScript to view this portfolio.</noscript></div>
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 <script>/* ===== EDIT YOUR CONTENT HERE =====
    Everything on the site is generated from this object. Change text, add or delete items in any list.
    An empty list or missing block hides that section automatically. Save, then refresh the browser. */
@@ -108,7 +109,7 @@ window.PORTFOLIO = {
   initials: "PM",
   navTitle: "Techno-Functional Product Leader",
   hero: {
-    badge: "Available for Application Head / Product Owner / Solution Delivery/Technical Consultant",
+    badge: "Available for Application Head / Product Owner / Solution Delivery Roles",
     title: "Techno-Functional Product Leader & Application Owner",
     tagline: "Digital Lending Transformation • LOS/LMS Architecture • Fintech Ecosystem Delivery",
     summary: "<b>14 years</b> of proven expertise driving end-to-end digital lending transformation across NBFCs, Small Finance Banks, and Fintech firms. Bridging business requirements and software engineering to architect and deliver high-scale LOS/LMS, digital onboarding/eKYC, credit decisioning, and automated collection ecosystems.",
@@ -122,7 +123,7 @@ window.PORTFOLIO = {
     location: "Bengaluru, Karnataka, India", status: "L&T Finance Lead",
     email: "maharanaprasant16@gmail.com", email2: "prasanta.pgcbf05@iimtrichy.ac.in",
     phone: "+91 8431932522",
-    linkedinLabel: "PrasantaMaharana", linkedinUrl: "www.linkedin.com/in/prasantamaharana",   // paste your full LinkedIn URL to make it clickable
+    linkedinLabel: "PrasantaMaharana", linkedinUrl: "",   // paste your full LinkedIn URL to make it clickable
     headline: "Let's build the next digital lending platform",
     text: "Open to Application Head, Application Owner and Product Owner roles across digital lending. Reach out and I will get back to you."
   },
@@ -363,7 +364,8 @@ parts.push(h('footer', { id: 'contact', class: 'sec contact', 'data-label': 'Con
   h('div', { class: 'cgrid' }, [['mail', 'Email', C.email, 'mailto:' + C.email], ['cap', 'College Email', C.email2, 'mailto:' + C.email2], ['phone', 'Phone', C.phone, 'tel:' + (C.phone || '').replace(/\s/g, '')], ['linkedin', 'LinkedIn', C.linkedinLabel, C.linkedinUrl], ['pin', 'Location', C.location, '']]
     .filter(r => r[2]).map(r => h(r[3] ? 'a' : 'div', { class: 'cc reveal', href: r[3] || null, target: r[0] === 'linkedin' ? '_blank' : null, rel: 'noopener' }, icon(r[0]), h('span', {}, h('small', {}, r[1]), h('b', {}, r[2]))))),
   h('div', { class: 'cta center' }, C.email && h('a', { class: 'btn light', href: 'mailto:' + C.email }, icon('send'), 'Send an Email'), D.resume && h('a', { class: 'btn outline', href: D.resume, download: D.name.replace(/\s+/g, '_') + '_Resume.pdf' }, icon('down'), 'Download Resume (PDF)')),
-  h('p', { class: 'copy' }, '© ' + new Date().getFullYear() + ' ' + D.name))));
+  h('p', { class: 'copy' }, '© ' + new Date().getFullYear() + ' ' + D.name),
+  h('p', { class: 'visitor-count', 'aria-live': 'polite' }, '👁 Total Visitors: ', h('strong', { id: 'visitor-count' }, 'Loading...')))));
 
 /* nav */
 const links = parts.filter(p => p.dataset && p.dataset.label && p.id !== 'contact');
@@ -373,6 +375,20 @@ const nav = h('header', { class: 'nav' }, h('div', { class: 'wrap bar' },
   h('div', { class: 'acts' }, h('button', { type: 'button', class: 'btn ghost sm', onclick: () => window.print() }, icon('print'), 'Print Resume'), h('a', { class: 'btn primary sm', href: '#contact' }, icon('send'), 'Get In Touch'))));
 const fab = h('a', { class: 'fab', href: '#about', 'aria-label': 'Back to top' }, icon('up'));
 app.replaceChildren(nav, h('main', {}, parts.filter(p => p.id !== 'contact')), parts.find(p => p.id === 'contact'), fab);
+
+/* Website visitor counter: increments once whenever the page is loaded */
+(async function updateVisitorCounter() {
+  const display = document.getElementById('visitor-count');
+  try {
+    // Replace this with the exact workspace name created in your CounterAPI account.
+    const counter = new Counter({ workspace: 'prasantamaharana-portfolio' });
+    const result = await counter.up('total-visitors');
+    display.textContent = Number(result.value).toLocaleString('en-IN');
+  } catch (error) {
+    console.error('Visitor counter could not be updated:', error);
+    display.textContent = 'Unavailable';
+  }
+})();
 
 /* behaviour */
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .08 });
