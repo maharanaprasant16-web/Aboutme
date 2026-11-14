@@ -98,7 +98,6 @@ h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.02em;li
 </head>
 <body>
 <div id="app"><noscript>Please enable JavaScript to view this portfolio.</noscript></div>
-<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 <script>/* ===== EDIT YOUR CONTENT HERE =====
    Everything on the site is generated from this object. Change text, add or delete items in any list.
    An empty list or missing block hides that section automatically. Save, then refresh the browser. */
@@ -123,7 +122,7 @@ window.PORTFOLIO = {
     location: "Bengaluru, Karnataka, India", status: "L&T Finance Lead",
     email: "maharanaprasant16@gmail.com", email2: "prasanta.pgcbf05@iimtrichy.ac.in",
     phone: "+91 8431932522",
-    linkedinLabel: "PrasantaMaharana", linkedinUrl: "",   // paste your full LinkedIn URL to make it clickable
+    linkedinLabel: "PrasantaMaharana", linkedinUrl: "https://www.linkedin.com/in/prasantamaharana/",   // paste your full LinkedIn URL to make it clickable
     headline: "Let's build the next digital lending platform",
     text: "Open to Application Head, Application Owner and Product Owner roles across digital lending. Reach out and I will get back to you."
   },
@@ -376,18 +375,28 @@ const nav = h('header', { class: 'nav' }, h('div', { class: 'wrap bar' },
 const fab = h('a', { class: 'fab', href: '#about', 'aria-label': 'Back to top' }, icon('up'));
 app.replaceChildren(nav, h('main', {}, parts.filter(p => p.id !== 'contact')), parts.find(p => p.id === 'contact'), fab);
 
-/* Website visitor counter: increments once whenever the page is loaded */
+/* Website visitor counter: +1 every time the page is opened or refreshed */
 (async function updateVisitorCounter() {
   const display = document.getElementById('visitor-count');
-  try {
-    // Replace this with the exact workspace name created in your CounterAPI account.
-    const counter = new Counter({ workspace: 'prasantamaharana-portfolio' });
-    const result = await counter.up('total-visitors');
-    display.textContent = Number(result.value).toLocaleString('en-IN');
-  } catch (error) {
-    console.error('Visitor counter could not be updated:', error);
-    display.textContent = 'Unavailable';
+  const NS = 'prasantamaharana-portfolio', KEY = 'total-visitors';
+  // Each endpoint increments the counter by 1 and returns the new total.
+  const endpoints = [
+    { url: `https://api.counterapi.dev/v1/${NS}/${KEY}/up`, read: d => d.count },
+    { url: `https://abacus.jasoncameron.dev/hit/${NS}/${KEY}`, read: d => d.value }
+  ];
+  for (const ep of endpoints) {
+    try {
+      const res = await fetch(ep.url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const total = Number(ep.read(await res.json()));
+      if (!Number.isFinite(total)) throw new Error('Unexpected response');
+      display.textContent = total.toLocaleString('en-IN');
+      return;
+    } catch (err) {
+      console.warn('Visitor counter endpoint failed:', ep.url, err);
+    }
   }
+  display.textContent = 'Unavailable';
 })();
 
 /* behaviour */
